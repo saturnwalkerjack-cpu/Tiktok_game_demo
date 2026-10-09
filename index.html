@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080b17"><title>ARCANA · Your Three-Card Reading</title>
+<meta name="description" content="Swipe with your finger. Open your hand. Draw three cards to find your direction.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080b17'/%3E%3Cpath d='M16 4L19 13L28 16L19 19L16 28L13 19L4 16L13 13Z' fill='%23e8ce98'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=unclipped-glow-7">
+</head>
+<body>
+<main id="app" class="stage">
+  <video id="camera" autoplay muted playsinline></video>
+  <div class="veil"></div><div class="aurora"></div><canvas id="particles" aria-hidden="true"></canvas>
+  <section id="intro" class="intro" hidden></section>
+  <section id="play-heading" class="play-heading" hidden aria-live="polite"><h2 id="instruction">Swipe to explore</h2></section>
+  <div class="orbit" aria-hidden="true"><div class="orbit-inner"></div><span>✦</span></div>
+  <section class="deck-area" id="deck-area" aria-label="Tarot deck. Move your index finger left or right to browse."><div class="center-beacon" aria-hidden="true"></div><div id="deck" class="deck"></div><div class="selection-line"><span></span><b>✧</b><span></span></div></section>
+  <div id="drawn-cards" class="drawn-cards" hidden aria-label="Your selected cards"></div>
+  <div id="palm-ring" class="palm-ring" hidden><div></div><span>✦</span></div>
+  <div id="trail-cursor" class="trail-cursor" hidden></div>
+  <section class="bottom" id="bottom"><div id="start-actions"><button id="start" class="primary">Enable camera <span>✧</span></button></div></section>
+  <p id="notice" class="notice" role="status" aria-live="polite" hidden></p>
+  <div class="flash" id="flash" aria-hidden="true"></div>
+  <section id="result" class="result" hidden aria-label="Your Arcana transformation"><div class="reading-content"><div id="result-spread" class="result-spread"></div><div class="result-copy"><span id="result-tag"></span><h3 id="result-name"></h3><p id="result-reading"></p></div></div></section>
+</main>
+<script type="module" src="app.js?v=velvet-stage-6"></script>
+</body></html>
