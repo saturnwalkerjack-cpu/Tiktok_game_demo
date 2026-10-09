@@ -15,7 +15,7 @@ let audio,worker,workerReady=false,frameBusy=false,videoTime=-1,lastFrame=0,last
 let noticeTimer,revealTimer,resultTimer,guideTimer,guideStep='browse',smoothTip=null,lastGestureAt=0,lastOpenAt=0,lastPointAt=0,releaseSince=0,frameSentAt=0,lastSwipeAt=-Infinity,faceWorker=null,faceReady=false,faceBusy=false,lastFaceFrame=0,faceSentAt=0,ritualOpenSince=0;
 const app=$('app'),video=$('camera'),deck=$('deck'),canvas=$('particles'),ctx=canvas.getContext('2d');
 let ritual=null;
-import('./ritual-scene.js?v=velvet-stage-6').then(async({RitualScene})=>{ritual=new RitualScene(app);const ok=await ritual.init();if(!ok)notify('3D effects are unavailable in this browser.',6000);}).catch(e=>{console.warn(e);notify('3D effects could not load. Please refresh.',6000);});
+function startRitual(){if(ritual)return;import('./ritual-scene.js?v=velvet-stage-6').then(async({RitualScene})=>{ritual=new RitualScene(app);const ok=await ritual.init();if(!ok)notify('3D effects are unavailable in this browser.',6000);}).catch(e=>{console.warn(e);notify('3D effects could not load. Please refresh.',6000);});}
 applySafeLayout(app);
 const cardNodes=[];let particles=[],stars=[],w=0,h=0,dpr=1,lastAnim=0,swipeAccumulator=0;
 for(let slot=-3;slot<=3;slot++){
@@ -56,9 +56,9 @@ function releaseCamera(){if(stream)stream.getTracks().forEach(t=>t.stop());strea
 async function startCamera(){if(cameraPending)return;cameraPending=true;initAudio();$('start').disabled=true;$('start').textContent='Opening your camera…';
  try{
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('unsupported');
-  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:1280}},audio:false});video.srcObject=stream;await video.play();app.classList.add('camera-active');begin();startFaceTracking();
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:1280}},audio:false});video.srcObject=stream;await video.play();app.classList.add('camera-active');begin();
   await new Promise((resolve,reject)=>{worker=new Worker(new URL('./hand-worker.js?v=ritual-face-4',import.meta.url));const timeout=setTimeout(()=>reject(new Error('model-timeout')),40000);worker.onerror=()=>{clearTimeout(timeout);reject(new Error('model'));if(workerReady)cameraFailed(new Error('model'));};worker.onmessage=({data})=>{if(data.type==='ready'){clearTimeout(timeout);workerReady=true;resolve();}else if(data.type==='result'){frameBusy=false;if(state.mode==='camera'&&['browse','ritual'].includes(state.phase))processHand(data);}else if(data.type==='error'){clearTimeout(timeout);frameBusy=false;reject(new Error('model'));if(workerReady)cameraFailed(new Error('model'));}};worker.postMessage({type:'init'});});
-  if(state.mode==='camera'){state.phase='ritual';ritualOpenSince=0;setInstruction('awaken');}if(!loopStarted){loopStarted=true;cameraLoop();}
+  if(state.mode==='camera'){state.phase='ritual';ritualOpenSince=0;setInstruction('awaken');startFaceTracking();startRitual();}if(!loopStarted){loopStarted=true;cameraLoop();}
  }catch(e){cameraFailed(e);}
  finally{cameraPending=false;$('start').disabled=false;$('start').innerHTML='Begin your reading <span>✧</span>';}
 }
